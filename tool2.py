@@ -21,7 +21,7 @@ def draw_cylinder(radius, height, num_slices):
         circle_pts.append(pt)
 
     glBegin(GL_TRIANGLE_FAN)#drawing the back circle
-    glColor(1, 0, 0)
+    glColor(1, 0.85, 0.72)
     glVertex(0, 0, h/2.0)
     for (x, y) in circle_pts:
         z = h/2.0
@@ -29,7 +29,7 @@ def draw_cylinder(radius, height, num_slices):
     glEnd()
 
     glBegin(GL_TRIANGLE_FAN)#drawing the front circle
-    glColor(0, 0, 1)
+    glColor(1, 0.85, 0.72)
     glVertex(0, 0, h/2.0)
     for (x, y) in circle_pts:
         z = -h/2.0
@@ -37,7 +37,7 @@ def draw_cylinder(radius, height, num_slices):
     glEnd()
 
     glBegin(GL_TRIANGLE_STRIP)#draw the tube
-    glColor(0, 1, 0)
+    glColor(1, 0.9, 0.7)
     for (x, y) in circle_pts:
         z = h/2.0
         glVertex(x, y, z)
@@ -47,23 +47,64 @@ def draw_cylinder(radius, height, num_slices):
 
 
 if __name__ == '__main__':
+
+    """pygame.init()
+    screen = pygame.display.set_mode((800, 600))
+    clock = pygame.time.Clock()
+    rotation = 0.0
+    while True:
+        pygame.time.delay(10)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+        screen.fill((220, 220, 220))
+        pygame.display.flip()"""
+
     pygame.init()
-    (width, height) = (800, 600)
-    screen = pygame.display.set_mode((width, height), OPENGL | DOUBLEBUF)
+    display = (800, 600)
+    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+
+    gluPerspective(45, (display[0] / display[1]), 0.1, 50.0)
+    glTranslatef(0.0, 0.0, -20)
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        glRotatef(1, 1, 1, 1)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+        draw_cylinder(2, 10, 100)
+
+        pygame.display.flip()
+        pygame.time.wait(10)
+
+
+
+
+
+
+
+
+    """(width, height) = (800, 600)
+    screen = pygame.display.set_mode((800, 600), OPENGL | DOUBLEBUF)
+    screen.fill(color)
     clock = pygame.time.Clock()
     rotation = 0.0
 
     while True:
 
-        # pygame.time.delay(10)
+        pygame.time.delay(10)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
-        screen.fill('white')
-        pygame.display.update()
+
 
         rotation += 1.0
         glClear(GL_COLOR_BUFFER_BIT)
@@ -80,6 +121,6 @@ if __name__ == '__main__':
 
         draw_cylinder(2, 10, 100)
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(60)"""
 
 
