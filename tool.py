@@ -1,9 +1,10 @@
-import math
-import time
-import OpenGL
+import pygame
+from pygame.locals import *
 from OpenGL.GL import *
-from OpenGL.GLUT import *
 from OpenGL.GLU import *
+import math
+
+
 
 
 class tool():
@@ -55,102 +56,143 @@ class tool():
             raise ValueError('Eckradius must be an integer!')
         self.z = value
 
-    # TODO
-    def move(self):
-        return 0
+    def drawCylinder(self, startPosition, h):
 
-    def cylinder(self, x1, y1, z1, x2, y2, z2, radius):
-        v = [x2 - x1, y2 - y1, z2 - z1]
-        height = math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
-        axis = (1, 0, 0) if math.hypot(v[0], v[1]) < 0.001 else cross(v, (0, 0, 1))
-        angle = -math.atan2(math.hypot(v[0], v[1]), v[2]) * 180 / math.pi
+        # begin on this position
+        glTranslatef(startPosition[0], startPosition[1], startPosition[2])
 
-        glPushMatrix()
-        glTranslate(x1, y1, z1)
-        glRotate(angle, *axis)
-        glutSolidCylinder(radius, height, 24, 12)  # radius, height, line1 in the cylinder, line2 in the cylinder
-        glPopMatrix()
+        # draw the cylinder
+        glBegin(GL_QUAD_STRIP)
+        for i in range(0, 360, 5):
+            glColor3f(1, 0.85, 0.72)
+            glVertex3f(math.sin(i), math.cos(i), h)
+            glVertex3f(math.sin(i), math.cos(i), 0)
+        glEnd()
 
-
-def cross(a, b):
-    return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]
-
-
-def setCylinder(tool):
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-
-    # rotation
-    # glRotatef(30, 0, -1, 0)
-
-    # move
-    glTranslatef(-0.5, 0, 0)
-
-    gluPerspective(45, wnd_w / wnd_h, 0.1, 10)
-    glMatrixMode(GL_MODELVIEW)
-    glLoadIdentity()
-
-    # stellt Blickwinkel(für Augen)
-    gluLookAt(0, -2, -1, 0, 0, 0, 0, 0, 1)
-
-    # stellt Hintergrund Frabe
-    glClearColor(0.5, 0.5, 0.5, 1.0)
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
-    # glEnable(GL_DEPTH_TEST)
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)  # causes wire frame
-
-    # stellt Zylinder Frabe
-    glColor(1, 1, 0.5)
-
-    # Zylinder malen
-    tool.cylinder(0, 0, 0, 0, 0, tool.getSchneidenlaenge(), tool.getDurchmesser() / 2)
-
-    glutSwapBuffers()
-    glutPostRedisplay()
+        glBegin(GL_LINES)
+        glColor(0, 1, 1)
+        glVertex3f(1, 0, h)
+        glVertex3f(0, 0, h)
+        glEnd()
 
 
-"""nptx = 10
-npty = 10
 
-def drawCoordinates():
-    glClearColor(0.0, 0.0, 0.0, 0.0)
-    glClear(GL_COLOR_BUFFER_BIT)
-    glColor3f(0.0, 1.0, 0.0)
-    glLineWidth(2)
 
-    glBegin(GL_QUADS)
 
-    for ye in range(0, npty):
-        for xe in range(0, nptx):
-            glVertex3f(xe, ye + 1, 0)
-            glVertex3f(xe + 1, ye + 1, 0)
-            glVertex3f(xe + 1, ye, 0)
-            glVertex3f(xe, ye, 0)
+def drawCoord(length):
+
+    glBegin(GL_LINES)
+
+
+    glColor4f(1.0, 1.0, 1.0, 0.005)
+    for i in range(int(length)):
+        glVertex3f(i, 0, 0)
+        glVertex3f(i, length, 0)
+        glVertex3f(0, i, 0)
+        glVertex3f(length, i, 0)
+
+        glVertex3f(0, i, 0)
+        glVertex3f(0, i, length)
+        glVertex3f(0, 0, i)
+        glVertex3f(0, length, i)
+
+        glVertex3f(0, 0, i)
+        glVertex3f(length, 0, i)
+        glVertex3f(i, 0, 0)
+        glVertex3f(i, 0, length)
+
+
+    # draw x, y, z axis
+    glColor(1, 0, 0)
+    glVertex3f(0, 0, 0)
+    glVertex3f(length, 0, 0)
+
+    glColor(0, 1, 0)
+    glVertex3f(0, 0, 0)
+    glVertex3f(0, length, 0)
+
+    glColor(0, 0, 1)
+    glVertex3f(0, 0, 0)
+    glVertex3f(0, 0, length)
 
     glEnd()
-    glFlush()
-"""
+
+
+
+
+
+
 
 if __name__ == '__main__':
-    wnd_w, wnd_h = 800, 600
-    glutInit()
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
-    glutInitWindowSize(wnd_w, wnd_h)
-    # glutInitWindowPosition(50, 50)
-    glutCreateWindow("Aufgabe 1")
 
-    # ein neuer Zylinder erzeugen
-    tool1 = tool(1, 0.08, 0.3, 0, 2)
-    tool2 = tool(2, 0.3, 0.6, 0, 2)
+    pygame.init()
+    display = (800, 600)
+    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+
+    gluPerspective(45, (display[0] / display[1]), 0, 50.0)
+    glTranslatef(0, 0, -20)
+
+    # camera position
+    gluLookAt(3, 3, 3, 0, 0, 0, 0, 0, 1)
+
+    # glEnable(GL_BLEND)
+
+    x = 0
+    y = 0
+    z = 0
+
+    tool01 = tool(2, 0.3, 6, 0, 2)
+
+    while True:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        #glRotatef(1, 0, 1, 0)
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+        glPushMatrix()
+
+        # move the cylinder
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            glTranslatef(0.1, 0, 0)
+            x += 0.1
+        elif keys[pygame.K_RIGHT]:
+            glTranslatef(-0.1, 0, 0)
+            x -= 0.1
+        elif keys[pygame.K_UP]:
+            glTranslatef(0, -0.1, 0)
+            y -= 0.1
+        elif keys[pygame.K_DOWN]:
+            glTranslatef(0, 0.1, 0)
+            y += 0.1
+        elif keys[pygame.K_w]:
+            glTranslatef(0, 0.1, 0)
+            z += 0.1
+        elif keys[pygame.K_s]:
+            glTranslatef(0, -0.1, 0)
+            z -= 0.1
+
+        # drawCone(2, 10, 100)
+        tool01.drawCylinder((x, y, z), tool01.getSchneidenlaenge())
 
 
-    # malen Zylinder
-    def runSetCylinder():
-        return setCylinder(tool2)
+        glPopMatrix()
 
-    glutDisplayFunc(runSetCylinder)  # kann nicht wie setCylinder() in glutDisplayFunc() sein
+        # draw the coordinate system
+        drawCoord(10)
 
-    # glTranslatef(-5, 0, 0)
 
-    glutMainLoop()
+
+
+
+        pygame.display.flip()
+        pygame.time.wait(10)
+
+
+
+
+
