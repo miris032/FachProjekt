@@ -7,6 +7,78 @@ import math
 
 
 
+class tool():
+
+    def __init__(self, toolNr, d, l, r, z):
+        self.toolNr = toolNr
+        self.d = d
+        self.l = l
+        self.r = r
+        self.z = z
+
+    def getToolNr(self):
+        return self.toolNr
+
+    def setToolNr(self, value):
+        if not isinstance(value, int):
+            raise ValueError('ToolNr must be an integer!')
+        self.toolNr = value
+
+    def getDurchmesser(self):
+        return self.d
+
+    def setDurchmesser(self, value):
+        if not isinstance(value, int):
+            raise ValueError('Durchmesser must be an integer!')
+        self.d = value
+
+    def getSchneidenlaenge(self):
+        return self.l
+
+    def setSchneidenlaenge(self, value):
+        if not isinstance(value, int):
+            raise ValueError('Schneidenlaenge must be an integer!')
+        self.l = value
+
+    def getEckradius(self):
+        return self.r
+
+    def setEckradius(self, value):
+        if not isinstance(value, int):
+            raise ValueError('Eckradius must be an integer!')
+        self.r = value
+
+    def getSchneidenanzahl(self, value):
+        return self.z
+
+    def setSchneidenanzahl(self, value):
+        if not isinstance(value, int):
+            raise ValueError('Eckradius must be an integer!')
+        self.z = value
+
+    def drawCylinder(self, startPosition, h):
+
+        # begin on this position
+        glTranslatef(startPosition[0], startPosition[1], startPosition[2])
+
+        # draw the cylinder
+        glBegin(GL_QUAD_STRIP)
+        for i in range(0, 360, 5):
+            glColor3f(1, 0.85, 0.72)
+            glVertex3f(math.sin(i), math.cos(i), h)
+            glVertex3f(math.sin(i), math.cos(i), 0)
+        glEnd()
+
+        glBegin(GL_LINES)
+        glColor(0, 1, 1)
+        glVertex3f(1, 0, h)
+        glVertex3f(0, 0, h)
+        glEnd()
+
+
+
+
+
 def drawCoord(length):
 
     glBegin(GL_LINES)
@@ -48,66 +120,6 @@ def drawCoord(length):
 
 
 
-def drawCone(radius, height, num_slices):
-    r = radius
-    h = height
-    n = float(num_slices)
-
-
-    circle_pts = []
-    for i in range(int(n) + 1):
-        angle = 2 * math.pi * (i/n)
-        x = r * math.cos(angle)
-        y = r * math.sin(angle)
-        pt = (x, y)
-        circle_pts.append(pt)
-
-
-
-    # draw the cone
-    glBegin(GL_TRIANGLE_FAN) # drawing the front circle
-    glColor(1, 0.85, 0.72)
-    glVertex(0, 0, h/2.0)
-    for (x, y) in circle_pts:
-        z = -h/2.0
-        glVertex(x, y, -z)
-    glEnd()
-
-
-    glBegin(GL_LINES)
-    glColor(1, 1, 1)
-    glVertex3f(0, -2, -5)
-    glVertex3f(0, 0, 5)
-    glEnd()
-
-
-
-
-def drawCylinder(startPosition, h):
-
-    # begin with this position
-    glTranslatef(startPosition[0], startPosition[1], startPosition[2])
-
-    # draw the cylinder
-    glBegin(GL_QUAD_STRIP)
-    for i in range(0, 360, 5):
-        glColor3f(1, 0.85, 0.72)
-        glVertex3f(math.sin(i), math.cos(i), h)
-        glVertex3f(math.sin(i), math.cos(i), 0)
-    glEnd()
-
-    glBegin(GL_LINES)
-    glColor(0, 1, 1)
-    glVertex3f(1, 0, h)
-    glVertex3f(0, 0, h)
-    glEnd()
-
-
-
-
-
-
-
 
 
 
@@ -128,6 +140,8 @@ if __name__ == '__main__':
     x = 0
     y = 0
     z = 0
+
+    tool01 = tool(2, 0.3, 6, 0, 2)
 
     while True:
 
@@ -163,7 +177,8 @@ if __name__ == '__main__':
             z -= 0.1
 
         # drawCone(2, 10, 100)
-        drawCylinder((x, y, z), 3)
+        tool01.drawCylinder((x, y, z), tool01.getSchneidenlaenge())
+
 
         glPopMatrix()
 
