@@ -79,41 +79,47 @@ class tool():
 
 
 
-def drawCoord(length):
+def drawCoord(tup):
 
     glBegin(GL_LINES)
 
 
-    glColor4f(1.0, 1.0, 1.0, 0.005)
-    for i in range(int(length)):
-        glVertex3f(i, 0, 0)
-        glVertex3f(i, length, 0)
-        glVertex3f(0, i, 0)
-        glVertex3f(length, i, 0)
+    glColor4f(1.0, 1.0, 1.0, 0.3)
+    for i1 in range(int(tup[0])):
+        glVertex3f(i1, 0, 0)
+        glVertex3f(i1, tup[1], 0)
+    for i2 in range(int(tup[1])):
+        glVertex3f(0, i2, 0)
+        glVertex3f(tup[0], i2, 0)
 
-        glVertex3f(0, i, 0)
-        glVertex3f(0, i, length)
-        glVertex3f(0, 0, i)
-        glVertex3f(0, length, i)
+    for j1 in range(int(tup[1])):
+        glVertex3f(0, j1, 0)
+        glVertex3f(0, j1, tup[2])
+    for j2 in range(int(tup[2])):
+        glVertex3f(0, 0, j2)
+        glVertex3f(0, tup[1], j2)
 
-        glVertex3f(0, 0, i)
-        glVertex3f(length, 0, i)
-        glVertex3f(i, 0, 0)
-        glVertex3f(i, 0, length)
+    for k1 in range(int(tup[2])):
+        glVertex3f(0, 0, k1)
+        glVertex3f(tup[0], 0, k1)
+    for k2 in range(int(tup[0])):
+        glVertex3f(k2, 0, 0)
+        glVertex3f(k2, 0, tup[2])
 
 
     # draw x, y, z axis
     glColor(1, 0, 0)
     glVertex3f(0, 0, 0)
-    glVertex3f(length, 0, 0)
+    glVertex3f(tup[0], 0, 0)
 
     glColor(0, 1, 0)
     glVertex3f(0, 0, 0)
-    glVertex3f(0, length, 0)
+    glVertex3f(0, tup[1], 0)
 
     glColor(0, 0, 1)
     glVertex3f(0, 0, 0)
-    glVertex3f(0, 0, length)
+    glVertex3f(0, 0, tup[2])
+
 
     glEnd()
 
@@ -133,15 +139,16 @@ if __name__ == '__main__':
     glTranslatef(0, 0, -20)
 
     # camera position
-    gluLookAt(3, 3, 3, 0, 0, 0, 0, 0, 1)
+    gluLookAt(10, 10, 10, 0, 0, 0, 0, 0, 1)
 
-    # glEnable(GL_BLEND)
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    glEnable(GL_BLEND)
+
+    tool01 = tool(2, 0.3, 6, 0, 2)
 
     x = 0
     y = 0
     z = 0
-
-    tool01 = tool(2, 0.3, 6, 0, 2)
 
     while True:
 
@@ -176,17 +183,12 @@ if __name__ == '__main__':
             glTranslatef(0, -0.1, 0)
             z -= 0.1
 
-        # drawCone(2, 10, 100)
         tool01.drawCylinder((x, y, z), tool01.getSchneidenlaenge())
-
 
         glPopMatrix()
 
         # draw the coordinate system
-        drawCoord(10)
-
-
-
+        drawCoord( (15, 15, 10) )
 
 
         pygame.display.flip()
