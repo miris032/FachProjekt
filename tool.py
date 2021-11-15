@@ -1,10 +1,12 @@
+import time
+
 import pygame
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import math
 
-
+import readCSV
 
 
 class tool():
@@ -149,6 +151,7 @@ if __name__ == '__main__':
     x = 0
     y = 0
     z = 0
+    #movementList = readCSV.getPosFromCsv()
 
     while True:
 
@@ -183,7 +186,28 @@ if __name__ == '__main__':
             glTranslatef(0, -0.1, 0)
             z -= 0.1
 
+
+        """for i in movementList:
+            a = movementList[i][1]
+            b = movementList[i][2]
+            c = movementList[i][3]
+            glTranslatef(a, b, c)
+            if i < len(movementList):
+                (x, y, z) = movementList[i + 1] - movementList[i]"""
+
+
         tool01.drawCylinder((x, y, z), tool01.getSchneidenlaenge())
+
+
+        """time.sleep(0.1)
+        x += 1
+        y += 1
+        glTranslatef(x, y, z)"""
+
+
+
+
+
 
         glPopMatrix()
 
