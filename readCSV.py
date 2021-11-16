@@ -2,7 +2,7 @@ import pandas as pd
 
 
 def getPosFromCsv():
-    file = pd.read_csv("nc_tasche_test.csv", sep=' ', header=None)
+    file = pd.read_csv("nc_tasche.csv", sep=' ', header=None)
     csvlist = file.values.tolist()
 
     """xList = []

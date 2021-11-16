@@ -1,11 +1,9 @@
 import time
-
 import pygame
 from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import math
-
 import readCSV
 
 
@@ -60,10 +58,10 @@ class tool():
 
     def drawCylinder(self, startPosition, h):
 
-        # begin on this position
+        "begin on this position"
         glTranslatef(startPosition[0], startPosition[1], startPosition[2])
 
-        # draw the cylinder
+        "draw the cylinder"
         glBegin(GL_QUAD_STRIP)
         for i in range(0, 360, 5):
             glColor3f(1, 0.85, 0.72)
@@ -78,38 +76,40 @@ class tool():
         glEnd()
 
 
+# TODO
+def drawPath():
+    return None
 
 
-
-def drawCoord(tup):
+def drawCoord(tup, dicht):
 
     glBegin(GL_LINES)
 
 
     glColor4f(1.0, 1.0, 1.0, 0.3)
-    for i1 in range(int(tup[0])):
+    for i1 in range(0, int(tup[0]), dicht):
         glVertex3f(i1, 0, 0)
         glVertex3f(i1, tup[1], 0)
-    for i2 in range(int(tup[1])):
+    for i2 in range(0, int(tup[1]), dicht):
         glVertex3f(0, i2, 0)
         glVertex3f(tup[0], i2, 0)
 
-    for j1 in range(int(tup[1])):
+    for j1 in range(0, int(tup[1]), dicht):
         glVertex3f(0, j1, 0)
         glVertex3f(0, j1, tup[2])
-    for j2 in range(int(tup[2])):
+    for j2 in range(0, int(tup[2]), dicht):
         glVertex3f(0, 0, j2)
         glVertex3f(0, tup[1], j2)
 
-    for k1 in range(int(tup[2])):
+    for k1 in range(0, int(tup[2]), dicht):
         glVertex3f(0, 0, k1)
         glVertex3f(tup[0], 0, k1)
-    for k2 in range(int(tup[0])):
+    for k2 in range(0, int(tup[0]), dicht):
         glVertex3f(k2, 0, 0)
         glVertex3f(k2, 0, tup[2])
 
 
-    # draw x, y, z axis
+    "draw x, y, z axis"
     glColor(1, 0, 0)
     glVertex3f(0, 0, 0)
     glVertex3f(tup[0], 0, 0)
@@ -128,9 +128,6 @@ def drawCoord(tup):
 
 
 
-
-
-
 if __name__ == '__main__':
 
     pygame.init()
@@ -140,85 +137,52 @@ if __name__ == '__main__':
     gluPerspective(45, (display[0] / display[1]), 0, 50.0)
     glTranslatef(0, 0, -20)
 
-    # camera position
-    gluLookAt(10, 10, 10, 0, 0, 0, 0, 0, 1)
+    "set the camera position"
+    gluLookAt(120, 100, 120, 0, 0, 0, 0, 0, 1)
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     glEnable(GL_BLEND)
 
+    "make a new tool: tool01"
     tool01 = tool(2, 0.3, 6, 0, 2)
 
-    x = 0
-    y = 0
-    z = 0
-    #movementList = readCSV.getPosFromCsv()
+    (x, y, z) = (0, 0, 0)
+    movementList = readCSV.getPosFromCsv()
 
-    while True:
+
+    for i in range(len(movementList)):
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
 
-        #glRotatef(1, 0, 1, 0)
+        # glRotatef(1, 0, 1, 0)
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         glPushMatrix()
 
-        # move the cylinder
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            glTranslatef(0.1, 0, 0)
-            x += 0.1
-        elif keys[pygame.K_RIGHT]:
-            glTranslatef(-0.1, 0, 0)
-            x -= 0.1
-        elif keys[pygame.K_UP]:
-            glTranslatef(0, -0.1, 0)
-            y -= 0.1
-        elif keys[pygame.K_DOWN]:
-            glTranslatef(0, 0.1, 0)
-            y += 0.1
-        elif keys[pygame.K_w]:
-            glTranslatef(0, 0.1, 0)
-            z += 0.1
-        elif keys[pygame.K_s]:
-            glTranslatef(0, -0.1, 0)
-            z -= 0.1
 
-
-        """for i in movementList:
-            a = movementList[i][1]
-            b = movementList[i][2]
-            c = movementList[i][3]
-            glTranslatef(a, b, c)
-            if i < len(movementList):
-                (x, y, z) = movementList[i + 1] - movementList[i]"""
-
-
+        "move the cylinder:"
         tool01.drawCylinder((x, y, z), tool01.getSchneidenlaenge())
 
+        "slow it down"
+        # time.sleep(0.1)
 
-        """time.sleep(0.1)
-        x += 1
-        y += 1
-        glTranslatef(x, y, z)"""
+        "print position info"
+        # print(i, ": ", (x, y, z))
 
-
-
-
+        x = movementList[i][0]
+        y = movementList[i][1]
+        z = movementList[i][2]
+        glTranslatef(x, y, z)
 
 
         glPopMatrix()
 
-        # draw the coordinate system
-        drawCoord( (15, 15, 10) )
+        "draw the coordinate system"
+        drawCoord((100, 100, 100), 5)
 
 
         pygame.display.flip()
         pygame.time.wait(10)
-
-
-
-
-
