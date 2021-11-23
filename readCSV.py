@@ -14,7 +14,7 @@ def getPosFromCsv():
         """xList.append(csvlist[i][0])
         yList.append(csvlist[i][1])
         zList.append(csvlist[i][2])"""
-        posList.append((csvlist[i][0], csvlist[i][1], csvlist[i][2]))
+        posList.append((csvlist[i][0], csvlist[i][1], csvlist[i][2], csvlist[i][3], csvlist[i][4]))
 
     return posList
 

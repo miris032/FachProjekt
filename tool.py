@@ -56,29 +56,49 @@ class tool():
             raise ValueError('Eckradius must be an integer!')
         self.z = value
 
-    def drawCylinder(self, startPosition, h):
 
-        "begin on this position"
+    def drawCylinder(self, startPosition, radius, height):
+        r = radius
+        h = height
+        # n = float(num_slices)
+        n = 50
+
         glTranslatef(startPosition[0], startPosition[1], startPosition[2])
 
-        "draw the cylinder"
-        glBegin(GL_QUAD_STRIP)
-        for i in range(0, 360, 5):
-            glColor3f(1, 0.85, 0.72)
-            glVertex3f(math.sin(i), math.cos(i), h)
-            glVertex3f(math.sin(i), math.cos(i), 0)
+        circle_pts = []
+        for i in range(int(n) + 1):
+            angle = 2 * math.pi * (i / n)
+            x = r * math.cos(angle)
+            y = r * math.sin(angle)
+            pt = (x, y)
+            circle_pts.append(pt)
+
+        glBegin(GL_TRIANGLE_STRIP)  # draw the tube
+        glColor3f(1, 0.85, 0.72)
+        for (x, y) in circle_pts:
+            z = h / 2.0
+            glVertex(x, y, z)
+            glVertex(x, y, -z)
         glEnd()
 
-        glBegin(GL_LINES)
-        glColor(0, 1, 1)
-        glVertex3f(1, 0, h)
-        glVertex3f(0, 0, h)
+        glBegin(GL_TRIANGLE_FAN)  # drawing the front circle
+        glColor(1, 0, 0)
+        glVertex(0, 0, h / 2.0)
+        for (x, y) in circle_pts:
+            z = h / 2.0
+            glVertex(x, y, z)
         glEnd()
 
 
-# TODO
-def drawPath():
-    return None
+        """glBegin(GL_TRIANGLE_FAN)  # drawing the back circle
+        glColor(0, 0, 1)
+        glVertex(0, 0, h / 2.0)
+        for (x, y) in circle_pts:
+            z = -h / 2.0
+            glVertex(x, y, z)
+        glEnd()"""
+
+
 
 
 def drawCoord(tup, dicht):
@@ -126,6 +146,10 @@ def drawCoord(tup, dicht):
     glEnd()
 
 
+def calDistance(p1, p2):
+    return math.sqrt(math.pow((p2[0] - p1[0]), 2) + math.pow((p2[1] - p1[1]), 2) + math.pow((p2[2] - p1[2]), 2))
+
+
 
 
 if __name__ == '__main__':
@@ -138,20 +162,19 @@ if __name__ == '__main__':
     glTranslatef(0, 0, -20)
 
     "set the camera position"
-    gluLookAt(120, 100, 120, 0, 0, 0, 0, 0, 1)
+    gluLookAt(180, 120, 120, 0, 40, 0, 0, 0, 1)
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     glEnable(GL_BLEND)
 
     "make a new tool: tool01"
-    tool01 = tool(2, 0.3, 6, 0, 2)
+    tool01 = tool(1, 30, 8, 0, 2)
 
     (x, y, z) = (0, 0, 0)
     movementList = readCSV.getPosFromCsv()
 
 
     for i in range(len(movementList)):
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -162,12 +185,8 @@ if __name__ == '__main__':
 
         glPushMatrix()
 
-
         "move the cylinder:"
-        tool01.drawCylinder((x, y, z), tool01.getSchneidenlaenge())
-
-        "slow it down"
-        # time.sleep(0.1)
+        tool01.drawCylinder((x, y, z), tool01.getSchneidenlaenge(), tool01.getDurchmesser())
 
         "print position info"
         # print(i, ": ", (x, y, z))
@@ -175,13 +194,24 @@ if __name__ == '__main__':
         x = movementList[i][0]
         y = movementList[i][1]
         z = movementList[i][2]
-        glTranslatef(x, y, z)
+        x1 = movementList[i+1][0]
+        y1 = movementList[i+1][1]
+        z1 = movementList[i+1][2]
+        #glTranslatef(x, y, z)
+
+        "speed control"
+        distance = calDistance((x1, y1, z1), (x, y, z))
+        speed = movementList[i][3]
+        t = distance / speed
+        time.sleep(t * 60)
 
 
         glPopMatrix()
 
         "draw the coordinate system"
-        drawCoord((100, 100, 100), 5)
+        drawCoord((100, 150, 100), 5)
+
+
 
 
         pygame.display.flip()
