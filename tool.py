@@ -106,7 +106,7 @@ def drawCoord(tup, dicht):
     glBegin(GL_LINES)
 
 
-    glColor4f(1.0, 1.0, 1.0, 0.3)
+    glColor4f(1.0, 1.0, 1.0, 0.1)
     for i1 in range(0, int(tup[0]), dicht):
         glVertex3f(i1, 0, 0)
         glVertex3f(i1, tup[1], 0)
@@ -156,7 +156,7 @@ if __name__ == '__main__':
 
     pygame.init()
     display = (800, 600)
-    pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
+    scree = pygame.display.set_mode(display, DOUBLEBUF | OPENGL)
 
     gluPerspective(45, (display[0] / display[1]), 0, 50.0)
     glTranslatef(0, 0, -20)
@@ -174,45 +174,86 @@ if __name__ == '__main__':
     movementList = readCSV.getPosFromCsv()
 
 
-    for i in range(len(movementList)):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
 
-        # glRotatef(1, 0, 1, 0)
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    displayCenter = [scree.get_size()[i] // 2 for i in range(2)]
+    mouseMove = [0, 0]
+    pygame.mouse.set_pos(displayCenter)
 
-        glPushMatrix()
+    up_down_angle = 0.0
+    paused = False
+    run = True
+    while run:
 
-        "move the cylinder:"
-        tool01.drawCylinder((x, y, z), tool01.getSchneidenlaenge(), tool01.getDurchmesser())
+        for i in range(len(movementList)):
 
-        "print position info"
-        # print(i, ": ", (x, y, z))
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        pygame.quit()
+                        quit()
 
-        x = movementList[i][0]
-        y = movementList[i][1]
-        z = movementList[i][2]
-        x1 = movementList[i+1][0]
-        y1 = movementList[i+1][1]
-        z1 = movementList[i+1][2]
-        #glTranslatef(x, y, z)
-
-        "speed control"
-        distance = calDistance((x1, y1, z1), (x, y, z))
-        speed = movementList[i][3]
-        t = distance / speed
-        time.sleep(t * 60)
+                "keep the mouse always in the center of screen"
+                if not paused:
+                    if event.type == pygame.MOUSEMOTION:
+                        mouseMove = [event.pos[i] - displayCenter[i] for i in range(2)]
+                    pygame.mouse.set_pos(displayCenter)
 
 
-        glPopMatrix()
+            keypress = pygame.key.get_pressed()  # Move using WASD
 
-        "draw the coordinate system"
-        drawCoord((100, 150, 100), 5)
+            if keypress[pygame.K_w]:
+                glTranslatef(2, 0, 0)
+            if keypress[pygame.K_s]:
+                glTranslatef(-2, 0, 0)
+            if keypress[pygame.K_d]:
+                glTranslatef(0, -2, 0)
+            if keypress[pygame.K_a]:
+                glTranslatef(0, 2, 0)
+
+            """mouseMove = pygame.mouse.get_rel()
+            glRotatef(mouseMove[0] * 0.1, 0.0, 1.0, 0.0)"""
 
 
 
 
-        pygame.display.flip()
-        pygame.time.wait(10)
+
+
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+
+            glPushMatrix()
+
+            "move the cylinder:"
+            tool01.drawCylinder((x, y, z), tool01.getSchneidenlaenge(), tool01.getDurchmesser())
+
+            "print position info"
+            # print(i, ": ", (x, y, z))
+
+            x = movementList[i][0]
+            y = movementList[i][1]
+            z = movementList[i][2]
+            x1 = movementList[i+1][0]
+            y1 = movementList[i+1][1]
+            z1 = movementList[i+1][2]
+            #glTranslatef(x, y, z)
+
+            "speed control"
+            distance = calDistance((x1, y1, z1), (x, y, z))
+            speed = movementList[i][3]
+            t = distance / speed
+            time.sleep(t * 60)
+
+
+            glPopMatrix()
+
+            "draw the coordinate system"
+            drawCoord((100, 150, 100), 5)
+
+
+
+
+            pygame.display.flip()
+            pygame.time.wait(10)
