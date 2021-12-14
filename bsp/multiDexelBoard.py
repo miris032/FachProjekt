@@ -1,6 +1,6 @@
 import numpy
 
-class multidexelboard():
+class multiDexelBoard():
 
     def __init__(self, resolution, height, width, depth, x, y, z):
         # In wie viele Teile soll das Werkstück zerlegt werden
