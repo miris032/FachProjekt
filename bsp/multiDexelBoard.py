@@ -179,4 +179,4 @@ class multidexelboard():
 
     def set_Z_Offset(self,value):
         for i in range(2,self.animation.size,3):
-            self.animation[i] = self.animation[i] + value,[0,70])
+            self.animation[i] = self.animation[i] + value
