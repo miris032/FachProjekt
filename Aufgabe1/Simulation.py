@@ -240,23 +240,18 @@ if __name__ == '__main__':
             tool01.drawCylinder((x, y, z), tool01.getSchneidenlaenge(), tool01.getDurchmesser())
 
 
-
-
-
-
             "print position info"
-            '''# print(i, ": ", (x, y, z))
-
-            x = movementList[i][0]
-            y = movementList[i][1]
-            z = movementList[i][2]
-            x1 = movementList[i+1][0]
-            y1 = movementList[i+1][1]
-            z1 = movementList[i+1][2]
-            #glTranslatef(x, y, z)'''
+            # print(i, ": ", (x, y, z))
 
 
             "cylinder speed control"
+            x = movementList[i][0]
+            y = movementList[i][1]
+            z = movementList[i][2]
+            x1 = movementList[i + 1][0]
+            y1 = movementList[i + 1][1]
+            z1 = movementList[i + 1][2]
+            # glTranslatef(x, y, z)
             distance = calDistance((x1, y1, z1), (x, y, z))
             speed = movementList[i][3]
             t = distance / speed
