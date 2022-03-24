@@ -57,7 +57,14 @@ class Linie():
             zeile2[2] = self.ortsvektor[1] - gerade.ortsvektor[1]
             zeile3[2] = self.ortsvektor[2] - gerade.ortsvektor[2]
 
-            if()
+            if(zeile2[0] * zeile1[1] - zeile1[0]*zeile2[1] == 0):
+                if(zeile3[0] * zeile1[1] - zeile1[0]*zeile3[1] == 0):
+                    schnitt = np.empty(2,dtype= float)
+                    schnitt[0] = gerade.ortsvektor[0] + gerade.parameter[1] * gerade.richtungsvektor[0]
+                    schnitt[1] = (schnitt[0] - self.ortsvektor[0]) / self.richtungsvektor[0]
+                    if((schnitt[1] > 0)  + (schnitt[1] < 1)):
+                        self.parameter[len(self.parameter)] = schnitt[1]
+
         # Geraden schneiden sich im rechten Winkel:
 
 
