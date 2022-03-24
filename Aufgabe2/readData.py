@@ -8,10 +8,12 @@ def getData():
     file = pd.read_csv("OberflächentopographieDatei.txt", sep=' ', header=None)
     dataList = file.values.tolist()
     return dataList
-    # plt.imshow(dataList)
 
 
-# 1373 x 1373
+def getData2():
+    file = pd.read_csv("OberflächentopographieDatei2.txt", sep=' ', header=None)
+    dataList = file.values.tolist()
+    return dataList
 
 
 if __name__ == '__main__':
