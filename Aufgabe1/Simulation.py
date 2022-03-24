@@ -161,7 +161,7 @@ if __name__ == '__main__':
     glTranslatef(0, 0, -20)
 
     "set the camera position"
-    gluLookAt(180, 120, 120, 0, 40, 0, 0, 0, 1)
+    gluLookAt(220, 120, 220, 0, 40, 0, 0, 0, 1)
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     glEnable(GL_BLEND)
@@ -229,7 +229,7 @@ if __name__ == '__main__':
             glBegin(GL_POINTS)
             glColor4f(1.0, 1.0, 1.0, 0.3)
 
-            arr = list(itertools.product(range(0, 100, 10), repeat=3))
+            arr = list(itertools.product(range(0, 150, 10), repeat=3))
             for j in range(len(arr)):
                 glVertex3d(arr[j][0], arr[j][1], arr[j][2])
 
@@ -255,7 +255,8 @@ if __name__ == '__main__':
             z1 = movementList[i+1][2]
             #glTranslatef(x, y, z)
 
-            "speed control"
+
+            "cylinder speed control"
             distance = calDistance((x1, y1, z1), (x, y, z))
             speed = movementList[i][3]
             t = distance / speed
@@ -264,23 +265,9 @@ if __name__ == '__main__':
 
             glPopMatrix()
 
-            "set all cubes"
-            '''#drawAllCubes()
-            Cube()
-            glTranslatef(10, 0, 0)
-            glFlush()'''
-
-
-
-
-
-
             "draw the coordinate system"
-            drawCoord((100, 150, 100), 5)
-
-
+            drawCoord((150, 150, 150), 5)
 
 
             pygame.display.flip()
             pygame.time.wait(10)
-
