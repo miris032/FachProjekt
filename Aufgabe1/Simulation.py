@@ -161,7 +161,7 @@ if __name__ == '__main__':
     glTranslatef(0, 0, -20)
 
     "set the camera position"
-    gluLookAt(220, 120, 220, 0, 40, 0, 0, 0, 1)
+    gluLookAt(240, 160, 240, 0, 40, 0, 0, 0, 1)
 
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
     glEnable(GL_BLEND)
