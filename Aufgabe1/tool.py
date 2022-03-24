@@ -1,3 +1,4 @@
+import itertools
 import time
 import pygame
 from pygame.locals import *
@@ -105,7 +106,6 @@ def drawCoord(tup, dicht):
 
     glBegin(GL_LINES)
 
-
     glColor4f(1.0, 1.0, 1.0, 0.1)
     for i1 in range(0, int(tup[0]), dicht):
         glVertex3f(i1, 0, 0)
@@ -141,7 +141,6 @@ def drawCoord(tup, dicht):
     glColor(0, 0, 1)
     glVertex3f(0, 0, 0)
     glVertex3f(0, 0, tup[2])
-
 
     glEnd()
 
@@ -196,10 +195,10 @@ if __name__ == '__main__':
                         quit()
 
                 "keep the mouse always in the center of screen"
-                if not paused:
+                '''if not paused:
                     if event.type == pygame.MOUSEMOTION:
                         mouseMove = [event.pos[i] - displayCenter[i] for i in range(2)]
-                    pygame.mouse.set_pos(displayCenter)
+                    pygame.mouse.set_pos(displayCenter)'''
 
 
             keypress = pygame.key.get_pressed()  # Move using WASD
@@ -221,13 +220,29 @@ if __name__ == '__main__':
 
 
 
-
+            "draw all the points"
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
             glPushMatrix()
 
-            "move the cylinder:"
+            glEnable(GL_POINT_SMOOTH)
+            glPointSize(5)
+            glBegin(GL_POINTS)
+            glColor4f(1.0, 1.0, 1.0, 0.3)
+
+            arr = list(itertools.product(range(0, 100, 10), repeat=3))
+            for j in range(len(arr)):
+                glVertex3d(arr[j][0], arr[j][1], arr[j][2])
+
+            glEnd()
+
+
+            "move the cylinder"
             tool01.drawCylinder((x, y, z), tool01.getSchneidenlaenge(), tool01.getDurchmesser())
+
+
+
+
+
 
             "print position info"
             # print(i, ": ", (x, y, z))
@@ -249,6 +264,17 @@ if __name__ == '__main__':
 
             glPopMatrix()
 
+            "set all cubes"
+            '''#drawAllCubes()
+            Cube()
+            glTranslatef(10, 0, 0)
+            glFlush()'''
+
+
+
+
+
+
             "draw the coordinate system"
             drawCoord((100, 150, 100), 5)
 
@@ -257,3 +283,4 @@ if __name__ == '__main__':
 
             pygame.display.flip()
             pygame.time.wait(10)
+
