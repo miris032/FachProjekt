@@ -229,9 +229,9 @@ if __name__ == '__main__':
             glBegin(GL_POINTS)
             glColor4f(1.0, 1.0, 1.0, 0.3)
 
-            arr = list(itertools.product(range(0, 150, 10), repeat=3))
-            for j in range(len(arr)):
-                glVertex3d(arr[j][0], arr[j][1], arr[j][2])
+            pointsList = list(itertools.product(range(0, 150, 10), repeat=3))
+            for j in range(len(pointsList)):
+                glVertex3d(pointsList[j][0], pointsList[j][1], pointsList[j][2])
 
             glEnd()
 
@@ -245,7 +245,7 @@ if __name__ == '__main__':
 
 
             "print position info"
-            # print(i, ": ", (x, y, z))
+            '''# print(i, ": ", (x, y, z))
 
             x = movementList[i][0]
             y = movementList[i][1]
@@ -253,7 +253,7 @@ if __name__ == '__main__':
             x1 = movementList[i+1][0]
             y1 = movementList[i+1][1]
             z1 = movementList[i+1][2]
-            #glTranslatef(x, y, z)
+            #glTranslatef(x, y, z)'''
 
 
             "cylinder speed control"
