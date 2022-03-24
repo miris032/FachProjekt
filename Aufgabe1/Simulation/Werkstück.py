@@ -81,6 +81,32 @@ class Werkstück():
     #Hier sollen die Dexel erstellt werden
 
     def initialisiere(self):
-        return 1
+
+        ini = np.empty(self.auflösung * self.auflösung)
+        para = 0
+
+        normalX = np.empty(3, dtype= float)
+        normalX[0] = self.länge
+        normalX[1] = 0
+        normalX[2] = 0
+
+        normalY = np.empty(3, dtype= float)
+        normalY[0] = 0
+        normalY[1] = self.breite
+        normalY[2] = 0
+
+        normalZ = np.empty(3, dtype= float)
+        normalZ[0] = 0
+        normalZ[1] = 0
+        normalZ[2] = self.höhe
+
+        for i in range(0,self.auflösung,1):
+            for j in range(0,self.auflösung,1):
+                ini[i+i*j] =
+
+
+
+
+
 
 
