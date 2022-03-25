@@ -12,6 +12,11 @@ def check(p1, p2, r, q):
     return (np.dot(q - p1, vec) >= 0 and np.dot(q - p2, vec) <= 0) and (np.linalg.norm(np.cross(q - p1, vec)) <= const)
 
 
+def set_diff2d(A, B):
+    nrows, ncols = A.shape
+    dtype = {'names': ['f{}'.format(i) for i in range(ncols)], 'formats': ncols * [A.dtype]}
+    C = np.setdiff1d(A.copy().view(dtype), B.copy().view(dtype))
+    return C
 
 
 if __name__ == '__main__':
@@ -31,8 +36,11 @@ if __name__ == '__main__':
     a = np.array([[1, 2, 3], [3, 4, 3], [3, 5, 3], [4, 1, 3], [4, 6, 3]])
     b = np.array([[3, 4, 3], [4, 6, 3]])
 
-    a1_rows = a.view([('', a.dtype)] * a.shape[1])
+    '''a1_rows = a.view([('', a.dtype)] * a.shape[1])
     a2_rows = b.view([('', b.dtype)] * b.shape[1])
     c = np.setdiff1d(a1_rows, a2_rows).view(a.dtype).reshape(-1, a.shape[1])
-    print(c)
+    print(c)'''
+
+    print(set_diff2d(a, b))
+
 

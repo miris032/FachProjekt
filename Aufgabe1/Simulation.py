@@ -151,7 +151,7 @@ def calDistance(p1, p2):
 
 
 "initialize all the points"
-pointsList = list(itertools.product(range(0, 150, 10), repeat=3))
+pointsList = np.array(list(itertools.product(range(0, 150, 10), repeat=3)))
 
 
 def getPointsList():
@@ -165,19 +165,28 @@ def check(p1, p2, r, q):
     return (np.dot(q - p1, vec) >= 0 and np.dot(q - p2, vec) <= 0) and (np.linalg.norm(np.cross(q - p1, vec)) <= const)
 
 
+def get_diff2d(A, B):
+    nrows, ncols = A.shape
+    dtype = {'names': ['f{}'.format(i) for i in range(ncols)], 'formats': ncols * [A.dtype]}
+    C = np.setdiff1d(A.copy().view(dtype), B.copy().view(dtype))
+    return C
+
+
 "the points which in the cylinder and should be deleted"
 def getDeletePointsList(cylinderPosition):
     global pointsList
     deletePointsList = []
-    for point in getPointsList():
+    for point in pointsList:
         p1 = np.array(cylinderPosition)
         p2 = np.array((p1[0], p1[1], p1[2] + 30))
         if check(p1, p2, 8, np.array(point)):
             deletePointsList.append(point)
+    deletePointsList = np.array(deletePointsList)
     return deletePointsList
 
 
 def updates(cylinderPosition):
+    #global pointsList
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glPushMatrix()
     glEnable(GL_POINT_SMOOTH)
@@ -190,9 +199,7 @@ def updates(cylinderPosition):
     #print(getDeletePointsList(cylinderPosition))
     a = np.array(getPointsList())
     b = np.array(getDeletePointsList(cylinderPosition))
-    a1_rows = a.view([('', a.dtype)] * a.shape[1])
-    a2_rows = b.view([('', b.dtype)] * b.shape[1])
-    pointsList = np.setdiff1d(a1_rows, a2_rows).view(a.dtype).reshape(-1, a.shape[1])
+    pointsList = get_diff2d(a, b)
 
 
     "draw the rest points"
