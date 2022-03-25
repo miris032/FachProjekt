@@ -1,5 +1,6 @@
 import itertools
 import time
+import numpy as np
 import pygame
 from pygame.locals import *
 from OpenGL.GL import *
@@ -75,7 +76,7 @@ class tool():
             circle_pts.append(pt)
 
         glBegin(GL_TRIANGLE_STRIP)  # draw the tube
-        glColor3f(1, 0.85, 0.72)
+        glColor3f(0.59, 0.8, 0.8)
         for (x, y) in circle_pts:
             z = h / 2.0
             glVertex(x, y, z)
@@ -83,7 +84,7 @@ class tool():
         glEnd()
 
         glBegin(GL_TRIANGLE_FAN)  # drawing the front circle
-        glColor(1, 0, 0)
+        glColor(0, 0, 0)
         glVertex(0, 0, h / 2.0)
         for (x, y) in circle_pts:
             z = h / 2.0
@@ -130,15 +131,15 @@ def drawCoord(tup, dicht):
 
 
     "draw x, y, z axis"
-    glColor(1, 0, 0)
+    #glColor(1, 0, 0)
     glVertex3f(0, 0, 0)
     glVertex3f(tup[0], 0, 0)
 
-    glColor(0, 1, 0)
+    #glColor(0, 1, 0)
     glVertex3f(0, 0, 0)
     glVertex3f(0, tup[1], 0)
 
-    glColor(0, 0, 1)
+    #glColor(0, 0, 1)
     glVertex3f(0, 0, 0)
     glVertex3f(0, 0, tup[2])
 
@@ -147,6 +148,58 @@ def drawCoord(tup, dicht):
 
 def calDistance(p1, p2):
     return math.sqrt(math.pow((p2[0] - p1[0]), 2) + math.pow((p2[1] - p1[1]), 2) + math.pow((p2[2] - p1[2]), 2))
+
+
+"initialize all the points"
+pointsList = list(itertools.product(range(0, 150, 10), repeat=3))
+
+
+def getPointsList():
+    return pointsList
+
+
+"check if point p in the cylinder(p1, p2, r)"
+def check(p1, p2, r, q):
+    vec = p2 - p1
+    const = r * np.linalg.norm(vec)
+    return (np.dot(q - p1, vec) >= 0 and np.dot(q - p2, vec) <= 0) and (np.linalg.norm(np.cross(q - p1, vec)) <= const)
+
+
+"the points which in the cylinder and should be deleted"
+def getDeletePointsList(cylinderPosition):
+    global pointsList
+    deletePointsList = []
+    for point in getPointsList():
+        p1 = np.array(cylinderPosition)
+        p2 = np.array((p1[0], p1[1], p1[2] + 30))
+        if check(p1, p2, 8, np.array(point)):
+            deletePointsList.append(point)
+    return deletePointsList
+
+
+def updates(cylinderPosition):
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+    glPushMatrix()
+    glEnable(GL_POINT_SMOOTH)
+    "set points size"
+    glPointSize(10)
+    glBegin(GL_POINTS)
+    glColor4f(1.0, 1.0, 1.0, 0.3)
+
+    "delete the getDeletePointsList() from pointsList"
+    #print(getDeletePointsList(cylinderPosition))
+    a = np.array(getPointsList())
+    b = np.array(getDeletePointsList(cylinderPosition))
+    a1_rows = a.view([('', a.dtype)] * a.shape[1])
+    a2_rows = b.view([('', b.dtype)] * b.shape[1])
+    pointsList = np.setdiff1d(a1_rows, a2_rows).view(a.dtype).reshape(-1, a.shape[1])
+
+
+    "draw the rest points"
+    for j in range(len(pointsList)):
+        glVertex3d(pointsList[j][0], pointsList[j][1], pointsList[j][2])
+    glEnd()
+
 
 
 
@@ -171,7 +224,6 @@ if __name__ == '__main__':
 
     (x, y, z) = (0, 0, 0)
     movementList = readCSV.getPosFromCsv()
-
 
 
     displayCenter = [scree.get_size()[i] // 2 for i in range(2)]
@@ -216,27 +268,16 @@ if __name__ == '__main__':
             glRotatef(mouseMove[0] * 0.1, 0.0, 1.0, 0.0)"""
 
 
+            x = movementList[i][0]
+            y = movementList[i][1]
+            z = movementList[i][2]
 
 
+            "draw the points"
+            updates((x, y, z))
 
 
-            "draw all the points"
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-            glPushMatrix()
-
-            glEnable(GL_POINT_SMOOTH)
-            glPointSize(5)
-            glBegin(GL_POINTS)
-            glColor4f(1.0, 1.0, 1.0, 0.3)
-
-            pointsList = list(itertools.product(range(0, 150, 10), repeat=3))
-            for j in range(len(pointsList)):
-                glVertex3d(pointsList[j][0], pointsList[j][1], pointsList[j][2])
-
-            glEnd()
-
-
-            "move the cylinder"
+            "draw and move the cylinder"
             tool01.drawCylinder((x, y, z), tool01.getSchneidenlaenge(), tool01.getDurchmesser())
 
 
@@ -245,9 +286,6 @@ if __name__ == '__main__':
 
 
             "cylinder speed control"
-            x = movementList[i][0]
-            y = movementList[i][1]
-            z = movementList[i][2]
             x1 = movementList[i + 1][0]
             y1 = movementList[i + 1][1]
             z1 = movementList[i + 1][2]
@@ -265,4 +303,4 @@ if __name__ == '__main__':
 
 
             pygame.display.flip()
-            pygame.time.wait(10)
+            #pygame.time.wait(10)
