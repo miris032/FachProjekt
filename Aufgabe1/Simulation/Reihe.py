@@ -1,6 +1,7 @@
 import numpy as np
 import Linie
 
+
 class Reihe():
 
     # richtung = Ausrichtung des Normalenvektors, Zahl: 0 ist z-Richtung, 1 ist y-Richtung, 2 ist x-Richtung
@@ -8,14 +9,13 @@ class Reihe():
     # normal = Normalenvektor, Array der Länge 3, (x,y,z)
     # reih = Liste von Geraden, wird aktuell in initialize erstellt
 
-
     def __init__(self, richtung, row, normal):
         self.richtung = richtung
         self.row = row
         self.normal = normal
-        self.reih
+        self.reih = []
 
-    #Getter und Setter
+    # Getter und Setter
 
     def getRow(self):
         return self.row
@@ -26,7 +26,7 @@ class Reihe():
     def setRichtung(self, value):
         self.richtung = value
 
-    def setRow(self,value):
+    def setRow(self, value):
         self.row = value
 
     # Methoden
@@ -35,7 +35,7 @@ class Reihe():
     # (x1,y1,z1,x2,y2,z2,x3,y3,z3,.....,xn,yn,zn) -> hat n Koordinaten
 
     def getKoordinaten(self):
-        ausgabe = np.empty(len(self.row)*3,dtype = float)
+        ausgabe = np.empty(len(self.row) * 3, dtype=float)
         count = 0
         for gerade in self.row:
             fill = gerade.getKoordinaten()
@@ -48,7 +48,7 @@ class Reihe():
 
     # Verschiebt alle Gerade der Reihe um value, value ist ein Array der Größe 3, (x,y,z)
 
-    def verschiebe(self,value):
+    def verschiebe(self, value):
         for gerade in self.row:
             gerade.verschiebe(value)
 
@@ -69,18 +69,13 @@ class Reihe():
 
     def initialize(self):
         count = 0
-        ortsvektor = np.empty(3,dtype = float)
-        parameter = np.empty(2, dtype = float)
+        ortsvektor = np.empty(3, dtype=float)
+        parameter = np.empty(2, dtype=float)
         parameter[0] = 0
         parameter[1] = 1
-        for i in range(0,len(self.row),1):
+        for i in range(0, len(self.row), 1):
             ortsvektor[0] = self.row[count]
-            ortsvektor[1] = self.row[count+1]
-            ortsvektor[2] = self.row[count+2]
+            ortsvektor[1] = self.row[count + 1]
+            ortsvektor[2] = self.row[count + 2]
             count = count + 3
-            self.reih.append(Linie(ortsvektor,self.normal, parameter, self.richtung))
-
-
-
-
-
+            self.reih.append(Linie.Linie(ortsvektor, self.normal, parameter, self.richtung))
