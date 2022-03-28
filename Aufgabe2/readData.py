@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -27,7 +28,15 @@ if __name__ == '__main__':
     plt.plot(list(range(1, n1+1)), list1)
     plt.show()'''
 
-    print(getData())
+    # print(getData())
+    x = range(1, 605494)
+    y = np.array(getData()).flatten()
+
+    print(y.shape)
+
+    l = plt.plot(x, y)
+    plt.show()
+
 
 
 

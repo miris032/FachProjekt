@@ -6,7 +6,7 @@ from pygame.locals import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 import math
-import readCSV
+from Aufgabe1.Simulation import readCSV
 
 
 class tool():
@@ -151,7 +151,7 @@ def calDistance(p1, p2):
 
 
 "initialize all the points"
-pointsList = np.array(list(itertools.product(range(0, 150, 10), repeat=3)))
+pointsList = np.array(list(itertools.product(range(0, 50, 10), repeat=3)))
 
 
 def getPointsList():
