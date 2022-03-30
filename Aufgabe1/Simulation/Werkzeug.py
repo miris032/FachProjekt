@@ -3,7 +3,7 @@ import Reihe
 
 class Werkzeug():
 
-    def __init__(self,höhe,breite,auflösung,ortsvektor,dexelX,dexelY,dexelZ,grenze):
+    def __init__(self,höhe,breite,auflösung):
         self.höhe = höhe
         self.breite = breite
         self.auflösung = auflösung
