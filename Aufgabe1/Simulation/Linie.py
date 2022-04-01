@@ -57,22 +57,37 @@ class Linie():
             zeile1[2] = self.ortsvektor[0] - gerade.ortsvektor[0]
             zeile2[2] = self.ortsvektor[1] - gerade.ortsvektor[1]
             zeile3[2] = self.ortsvektor[2] - gerade.ortsvektor[2]
+            #print(zeile1)
+            #print(zeile2)
+            #print(zeile3)
             # Prüfe ob beim LGS zwei vollständige Nullzeilen entstehen
             # Dann sind die Geraden parallel und es existieren unendlich viele Lösungen
             # Dann schneide die Gerade vom Werkstück an der Stelle der Spitze des Geradenstücks
             # vom Werkzeug
             if(zeile2[0] * zeile1[1] - zeile1[0]*zeile2[1] == 0):
                 if(zeile3[0] * zeile1[1] - zeile1[0]*zeile3[1] == 0):
-                    if(zeile2[0]*zeile1[3] - zeile1[0]*zeile2[2] == 0):
-                        if(zeile3[0]*zeile1[3] - zeile1[0]*zeile3[2] == 0):
-                    schnitt = np.empty(2,dtype= float)
-                    schnitt[0] = gerade.ortsvektor[0] + gerade.parameter[1] * gerade.richtungsvektor[0]
-                    schnitt[1] = (schnitt[0] - self.ortsvektor[0]) / self.richtungsvektor[0]
-                    if((schnitt[1] > 0)  + (schnitt[1] < 1)):
-                        self.parameter[len(self.parameter)] = schnitt[1]
+                    if(zeile2[0]*zeile1[2] - zeile1[0]*zeile2[2] == 0):
+                        if(zeile3[0]*zeile1[2] - zeile1[0]*zeile3[2] == 0):
+                            case = -1
+                            if(self.richtungsvektor[0] != 0):
+                                case = 0
+                            elif(self.richtungsvektor[1] != 0):
+                                case = 1
+
+                            elif(self.richtungsvektor[2] != 0):
+                                case = 2
+
+                            schnitt = np.empty(2,dtype= float)
+                            schnitt[0] = gerade.ortsvektor[case] + gerade.parameter[1]*gerade.richtungsvektor[case]
+
+                            schnitt[1] = (schnitt[0]-self.ortsvektor[case]) / self.richtungsvektor[case]
+
+                            if((schnitt[1] > 0)  + (schnitt[1] < 1)):
+                                self.parameter[len(self.parameter)-1] = schnitt[1]
+
 
     # Prüft ob sich die Geraden schneiden und gibt bei erfolg den Parameter
-    # zurück, ansonsten eine große Zahl
+    # zurück, und eine negative zahl bei nichterfolg
     def hatSchnittpunkt(self,gerade):
 
         if self.richtung != gerade.richtung:
@@ -92,59 +107,60 @@ class Linie():
             zeile1[2] = self.ortsvektor[0] - gerade.ortsvektor[0]
             zeile2[2] = self.ortsvektor[1] - gerade.ortsvektor[1]
             zeile3[2] = self.ortsvektor[2] - gerade.ortsvektor[2]
-            # Prüfe mit dem Determinantenkriterium ob eine Lösung existiert
-            if(zeile1[0]*zeile2[1] - zeile1[1]*zeile2[0] != 0):
-                if(zeile1[0]*zeile3[1] - zeile1[1]*zeile3[0] != 0):
-                    solution1 = (zeile2[0] * zeile1[1] - zeile1[0]*zeile2[1])/(zeile2[0]*zeile1[2]-zeile1[0]*zeile2[2])
-                    solution2 = (zeile3[0] * zeile1[1] - zeile1[0]*zeile3[1])/(zeile3[0]*zeile1[2]-zeile1[0]*zeile3[2])
-                if(solution1 == solution2):
-                    return solution1
-                else:
-                    return 100000000000000000000000
+            print(zeile1)
+            print(zeile2)
+            print(zeile3)
+            case = np.empty(2,dtype = float)
+            case[0] = -1
+            # Prüfe ob eine komplette Nullzeile exisitert, nur dann existiert eine Lösung
+            if((zeile1 == np.zeros(3)).all()):
+                if(zeile2[1] != 0):
+                    case[0] = 1
+                    case[1] = zeile2[2]/zeile2[1]
+                elif(zeile3[1] != 0):
+                    case[0] = 1
+                    case[1] = zeile3[2]/zeile3[1]
+            elif((zeile2 == np.zeros(3)).all()):
+                if(zeile1[1] != 0):
+                    case[0] = 2
+                    case[1] = zeile1[2]/zeile1[1]
+                elif(zeile3[1] != 0):
+                    case[0] = 2
+                    case[1] = zeile3[2]/zeile3[1]
+            elif((zeile3 == np.zeros(3)).all()):
+                if(zeile1[1] != 0):
+                    case[0] = 1
+                    case[1] = zeile1[2]/zeile1[1]
+                elif(zeile2[1] != 0):
+                    case[0] = 1
+                    case[1] = zeile2[2]/zeile2[1]
+
+
+            return case
 
     # Schneidet die Gerade am übergebenen Parameter
-    def schneideOrthogonal1(self,parameter):
-        self.parameter[len(self.parameter)] = parameter
-
-    # Teilt die gerade in zwei neue Teile auf
-    def schneideOrthogonal2(self, parameter1,parameter2):
-        count1 = -1
-        count2 = -1
-
-        for i in range(0,len(self.parameter),1):
-            if((parameter1 > self.parameter[i] )+(parameter1 < self.parameter[i+1])):
-                count1 = i+1
-            if((parameter1 > self.parameter[i] )+(parameter1 < self.parameter[i+1])):
-                count2 = i+1
-
-        para = np.empty(len(self.parameter)+2,dtype= float)
-
-        count = 0
-        for i in range(len(self.parameter)):
-            if(i == count1):
-                para[i+count] = parameter1
-                count = count + 1
-            elif(i == count2):
-                para[i+count] = parameter2
-                count = count + 1
-            else:
-                para[i+count] = self.parameter[i]
+    # Wenn mehr als eine Lösung existiert soll die Gerade von Linie
+    # gelöscht werden und zwei neue erstellt werden
+    def schneideOrthogonal(self,parameter):
+        if(parameter > 0 + parameter < 1):
+            self.parameter[len(self.parameter)-1] = parameter
 
 
 
-
+    # Bekommt 3D Array übergeben, mit Verschiebung (x,y,z)
     def verschiebe(self,value):
         self.ortsvektor[0] = self.ortsvektor[0] + value[0]
         self.ortsvektor[1] = self.ortsvektor[1] + value[1]
         self.ortsvektor[2] = self.ortsvektor[2] + value[2]
 
+    # Gibt den Anfangs und Endpunkt der Linie aus
     def getKoordinaten(self):
         ausgabe = np.empty(len(self.parameter)*3,dtype = float)
 
         for i in range(0,len(ausgabe),3):
-            ausgabe[i] = self.ortsvektor[0] + self.parameter[i/3] * self.richtungsvektor[0]
-            ausgabe[i+1] = self.ortsvektor[1] + self.parameter[i/3] * self.richtungsvektor[1]
-            ausgabe[i+2] = self.ortsvektor[2] + self.parameter[i/3] *  self.richtungsvektor[2]
+            ausgabe[i] = self.ortsvektor[0] + self.parameter[int(i/3)] * self.richtungsvektor[0]
+            ausgabe[i+1] = self.ortsvektor[1] + self.parameter[int(i/3)] * self.richtungsvektor[1]
+            ausgabe[i+2] = self.ortsvektor[2] + self.parameter[int(i/3)] *  self.richtungsvektor[2]
 
         return ausgabe
 
