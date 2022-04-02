@@ -1,5 +1,3 @@
-import numpy as np
-
 class Linie():
 
     # Ortsvektor und Richtungsvektor = nparray[3], parameter = nparray[0,1]
@@ -57,9 +55,7 @@ class Linie():
             zeile1[2] = self.ortsvektor[0] - gerade.ortsvektor[0]
             zeile2[2] = self.ortsvektor[1] - gerade.ortsvektor[1]
             zeile3[2] = self.ortsvektor[2] - gerade.ortsvektor[2]
-            #print(zeile1)
-            #print(zeile2)
-            #print(zeile3)
+
             # Prüfe ob beim LGS zwei vollständige Nullzeilen entstehen
             # Dann sind die Geraden parallel und es existieren unendlich viele Lösungen
             # Dann schneide die Gerade vom Werkstück an der Stelle der Spitze des Geradenstücks
@@ -107,12 +103,11 @@ class Linie():
             zeile1[2] = self.ortsvektor[0] - gerade.ortsvektor[0]
             zeile2[2] = self.ortsvektor[1] - gerade.ortsvektor[1]
             zeile3[2] = self.ortsvektor[2] - gerade.ortsvektor[2]
-            print(zeile1)
-            print(zeile2)
-            print(zeile3)
+
             case = np.empty(2,dtype = float)
             case[0] = -1
             # Prüfe ob eine komplette Nullzeile exisitert, nur dann existiert eine Lösung
+            # Löse dann das LGS
             if((zeile1 == np.zeros(3)).all()):
                 if(zeile2[1] != 0):
                     case[0] = 1
@@ -138,11 +133,10 @@ class Linie():
 
             return case
 
-    # Schneidet die Gerade am übergebenen Parameter
-    # Wenn mehr als eine Lösung existiert soll die Gerade von Linie
-    # gelöscht werden und zwei neue erstellt werden
+    # Schneidet die Gerade am übergebenen Parameter,
+    # falls dieser in den Bereich des Geradenstücks fällt
     def schneideOrthogonal(self,parameter):
-        if(parameter > 0 + parameter < 1):
+        if(parameter>self.parameter[0] + parameter < self.parameter[1]):
             self.parameter[len(self.parameter)-1] = parameter
 
 
@@ -163,5 +157,3 @@ class Linie():
             ausgabe[i+2] = self.ortsvektor[2] + self.parameter[int(i/3)] *  self.richtungsvektor[2]
 
         return ausgabe
-
-
