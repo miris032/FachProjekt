@@ -1,4 +1,5 @@
 import numpy as np
+import Linie
 import Reihe
 
 class Werkzeug():
@@ -8,10 +9,12 @@ class Werkzeug():
         self.breite = breite
         self.auflösung = auflösung
         self.ortsvektor = ortsvektor
-        self.dexelX = dexelX
-        self.dexelY = dexelY
-        self.dexelZ = dexelZ
-        self.grenze = grenze
+        self.dexelX = []
+        self.dexelY = []
+        self.dexelZ = []
+
+
+
 
     # Getter und Setter
 
