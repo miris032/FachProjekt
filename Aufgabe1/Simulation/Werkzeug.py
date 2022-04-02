@@ -65,15 +65,26 @@ class Werkzeug():
 
     # Methoden
 
-    def verschiebe(self):
-        return 1
+    # Verschiebt das WErkstück um value, nparray 3D, dtype=float
+    def verschiebe(self,value):
+        for reihen in self.dexelX:
+            reihen.verschiebe(value)
+        for reihen in self.dexelY:
+            reihen.verschiebe(value)
+        for reihen in self.dexelZ:
+            reihen.verschiebe(value)
 
+    #Gibt die Koordinaten der Hülle des Werkzeuges aus
     def getHülle(self):
-        return 1
+        ausgabe = np.array([], dtype = float)
+        ausgabe = self.dexelX[0]
 
-    # Hier sollen die Dexel erstellt werden
+        for i in range(1,len(self.dexelX),1):
+            ausgabe = np.concatenate(Reihe.getKoordinaten(self.dexelX[i]),ausgabe)
+        for i in range(0,len(self.dexelY),1):
+            ausgabe = np.concatenate(Reihe.getKoordinaten(self.dexelY[i]),ausgabe)
+        for i in range(0,len(self.dexelZ),1):
+            ausgabe = np.concatenate(Reihe.getKoordinaten(self.dexelZ[i]),ausgabe)
 
-    def initialisiere(self):
-        return 1
-
+        return ausgabe
 

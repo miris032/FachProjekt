@@ -128,6 +128,8 @@ class Werkstück():
         for i in range(0,len(self.dexelZ),1):
             ausgabe = np.concatenate(Reihe.getKoordinaten(self.dexelZ[i]),ausgabe)
 
+        return ausgabe
+
     # Schneide jede Gerade des Werkstücks mit jeder Reihe des Werkzeuges
     def schneide(self, werkz):
 
