@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import Linie
 import Reihe
 
@@ -8,11 +9,24 @@ class Werkzeug():
         self.höhe = höhe
         self.breite = breite
         self.auflösung = auflösung
-        self.ortsvektor = ortsvektor
         self.dexelX = []
         self.dexelY = []
         self.dexelZ = []
 
+        # Normalenvektoren erstellen
+        normalX = np.array(self.breite,0,0)
+        normalY = np.array(0,self.breite,0)
+        normalZ = np.array(0,0,self.höhe)
+
+        kreis = np.empty(auflösung*2*3,dtype = float)
+
+        for i in range(0,len(kreis),6):
+            kreis[i]   = math.cos(((i/auflösung)*(math.pi*2))/(math.pi*2))
+            kreis[i+1] = math.sin(((i/auflösung)*(math.pi*2))/(math.pi*2))
+            kreis[i+2] = 0
+            kreis[i+3] = math.cos(((i/auflösung)*(math.pi*2))/(math.pi*2) + math.pi)
+            kreis[i+4] = math.sin(((i/auflösung)*(math.pi*2))/(math.pi*2) + math.pi)
+            kreis[i+5] = 0
 
 
 
