@@ -28,6 +28,13 @@ class Werkzeug():
             kreis[i+4] = math.sin(((i/auflösung)*(math.pi*2))/(math.pi*2) + math.pi)
             kreis[i+5] = 0
 
+        kreis = np.reshape(kreis,(6,auflösung))
+
+        for i in range(0,int(len(kreis)/2),1):
+            normalY[0] = kreis[i][3] - kreis[i][0]
+            normalY[1] = kreis[i][4] - kreis[i][1]
+            normalY[2] = kreis[i][5] - kreis[i][2]
+            self.dexelY.append(Reihe())
 
 
     # Getter und Setter
